@@ -7,15 +7,11 @@ dotenv.config()
 const port=process.env.PORT || 8000
 
 
-connectDB()
-
-.then(()=>{
+connectDB().then(()=>{
     app.listen(port,()=>{
-        console.log(`error is : http://localhost:/${port}`)
+        console.log(`listen is : http://localhost:/${port}`)
     })
-})
-
-.catch(()=>{
+}).catch(()=>{
     console.log("(src/index.js) error is : ",err)
 })
 

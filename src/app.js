@@ -22,4 +22,9 @@ app.use(express.static("public"))
 app.use(cookieParser())
 
 // above middleware runs when app is used ! 
+
+
+import router from './routes/user.routes.js'
+
+app.use("/api/v1/users",router)
 export default app

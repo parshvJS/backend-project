@@ -1,6 +1,6 @@
 const asyncHandler=(accseFunction)=>{
-    (req,res,next)=>{
-        Promise.resolve(accseFunction()).catch((err)=>next(err))
+    return (req,res,next)=>{
+        Promise.resolve(accseFunction(req,res,next)).catch((err)=>next(err))
     }
 }
 
