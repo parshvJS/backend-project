@@ -232,7 +232,7 @@ const changeCurrentPassword = asyncHandler(
         const { oldPassword, newPassword } = req.body;
         const user = await User.findById(req.user?._id)
 
-        const isOldPasswordValid = User.isPasswordCorrect(oldPassword)
+        const isOldPasswordValid = await user.isPasswordCorrect(oldPassword)
         if (!isOldPasswordValid) throw new apiError(400, "Not Valid Old Password !")
 
         user.password = newPassword
@@ -276,7 +276,7 @@ const updateUserData = asyncHandler(
 const updateUserAvatar = asyncHandler(
     async (req, res) => {
 
-        const avatarLocalImage = req.file?.path;
+        const avatarLocalImage = req.files.avatar[0].path;
 
         if (!avatarLocalImage) throw new apiError(400, "No file Available to update !")
 
@@ -284,14 +284,18 @@ const updateUserAvatar = asyncHandler(
 
         if (!avatarCloudinary.url) throw new apiError(400, "No file Available to update in server !")
 
-        const user = await User.findById(req.user?.avatar).select("-password")
-
-        user.avatar = avatarCloudinary.url;
-        user.save({ validateBeforeSave: false })
+        const user = await User.findByIdAndUpdate(req.user._id, {
+            $set: {
+                avatar: avatarCloudinary?.url
+            }
+        }, {
+            validateBeforeSave: false,
+            new: true
+        }).select("-password")
 
         return res
             .status(200)
-            .json(new apiResponse(200, {}, "Your Avatar Changed successfully !"));
+            .json(new apiResponse(200, { "user": user }, "Your Avatar Changed successfully !"));
     }
 )
 
@@ -317,8 +321,14 @@ const updateUserCoverImg = asyncHandler(
     }
 )
 
+// const getWatchHistory = asyncHandler(
+//     async(req,res) => {
 
-export { registerUser, 
+//     }
+// )
+
+export {
+    registerUser,
     loginUser,
     loggoutUser,
     refreshAccessToken,
@@ -326,5 +336,5 @@ export { registerUser,
     getCurrentUser,
     updateUserData,
     updateUserAvatar,
-    updateUserCoverImg 
+    updateUserCoverImg
 }
