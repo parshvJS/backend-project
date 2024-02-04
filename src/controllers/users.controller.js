@@ -278,7 +278,7 @@ const updateUserData = asyncHandler(
 const updateUserAvatar = asyncHandler(
     async (req, res) => {
 
-        const avatarLocalImage = req.files.avatar[0].path;
+        const avatarLocalImage = req.file?.path;
 
         if (!avatarLocalImage) throw new apiError(400, "No file Available to update !")
 
